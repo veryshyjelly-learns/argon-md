@@ -1,15 +1,16 @@
-subroutine integrate(t,EQMDStep,TotAtom,Mass,Box,Temp,Rcut,Sig,Eps,AtomLabel,TimeStep,r,v,Force,KE,PE,hoc,ll,)
+subroutine integrate(t,EQMDStep,TotAtom,Mass,Box,Temp,Rcut,Sig,Eps,AtomLabel,TimeStep,r,v,Force,KE,PE,ll,hoc,ncel,rn)
  use general, only: dp
  use conversions 
  implicit none
  integer::i,j,TotAtom,Step,EQMDStep
  real(kind=dp) :: t,TimeStep2,ScaleTemp
- real(kind=dp),intent(in) :: Box,Mass,Temp,Rcut,Eps,Sig
+ real(kind=dp),intent(in) :: Box,Mass,Temp,Rcut,Eps,Sig,rn
  real(kind=dp):: sumv(3),sumv2,Tins,TimeStep
  character(len=5) :: AtomLabel(TotAtom) 
 
  real(kind=dp),intent(out) :: KE,PE
  real(kind=dp),intent(inout) :: r(TotAtom,3),v(TotAtom,3),Force(TotAtom,3)
+ integer, intent(in):: ncel, hoc(ncel, ncel, ncel), ll(TotAtom)
 
  Step=int(t/TimeStep)
  TimeStep2=TimeStep*TimeStep
@@ -36,7 +37,7 @@ subroutine integrate(t,EQMDStep,TotAtom,Mass,Box,Temp,Rcut,Sig,Eps,AtomLabel,Tim
 !    enddo
 !  endif
 
- call force_calc(TotAtom,Box,Rcut,r,Sig,Eps,Force,PE)
+ call force_calc(TotAtom,Box,Rcut,r,Sig,Eps,Force,PE,ll,hoc,ncel,rn)
 
  sumv=0.d0
  sumv2=0.d0

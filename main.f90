@@ -97,9 +97,11 @@ Temp=Temp/TempConv
  allocate(ll(TotAtom))
  allocate(hoc(ncel, ncel, ncel))
 
- 
+ write(*, *) 'initialize in main'
  call initialize(TotAtom,CoorFileName,Temp,Mass,Box,r,v,AtomLabel)     ! get initial coordinates and velocities 
 
+ call new_nlist(TotAtom, r, rn, ncel, ll, hoc)
+ write(*, *) 'force calc in main'
  call force_calc(TotAtom,Box,Rcut,r,Sig,Eps,Force,PE,ll,hoc,ncel,rn) 
 
  write(5000,"(a20,F18.5)") "Initial potential energy = ",PE*EnerConv  
@@ -111,6 +113,7 @@ Temp=Temp/TempConv
  do while (md_step < NoMDStep)
 
   if (MOD(md_step, 10) .eq. 0) then 
+    write(*, *) 'new_nlist in main'
      call new_nlist(TotAtom, r, rn, ncel, ll, hoc)
   endif
   call force_calc(TotAtom,Box,Rcut,r,Sig,Eps,Force,PE,ll,hoc,ncel,rn)                    ! calculates force

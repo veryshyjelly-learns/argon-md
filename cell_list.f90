@@ -6,6 +6,8 @@ SUBROUTINE new_nlist(TotAtom, r, rn, ncel, ll, hoc)
     real(kind=dp) :: rn 
     integer:: icelx, icely, icelz, ncel, i
     integer, intent(inout):: hoc(ncel, ncel, ncel), ll(TotAtom)
+    
+    write(*, *) "new_nlist"
 
     do icelx=1,ncel
         do icely=1, ncel
@@ -15,9 +17,16 @@ SUBROUTINE new_nlist(TotAtom, r, rn, ncel, ll, hoc)
         enddo
     enddo
     do i=1,TotAtom
-        icelx=int(r(i, 1)/rn)
-        icely=int(r(i, 2)/rn)
-        icelz=int(r(i, 3)/rn)
+        write(*, *) 'r(i, 1)', r(i, 1)
+        write(*, *) 'r(i, 2)', r(i, 2)
+        write(*, *) 'r(i, 3)', r(i, 3)
+        write(*, *) 'rn', rn
+        icelx=int(r(i, 1)/rn) + 1
+        icely=int(r(i, 2)/rn) + 1
+        icelz=int(r(i, 3)/rn) + 1
+        write(*, *) 'icelx=', icelx
+        write(*, *) 'icely=', icely
+        write(*, *) 'icelz=', icelz
         ll(i) = hoc(icelx, icely, icelz)
         hoc(icelx, icely, icelz) =i
     enddo
