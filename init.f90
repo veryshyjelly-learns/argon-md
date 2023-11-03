@@ -41,6 +41,11 @@ subroutine initialize(TotAtom,CoorFileName,Temp,Mass,Box,r,v,AtomLabel)
    enddo 
  enddo
 
+ do i=1,1
+   do j=1,3
+    write(*, *) i, j, r(i, j)
+   enddo
+ enddo
 
 !assign velocities 
 

@@ -2,12 +2,17 @@ SUBROUTINE new_nlist(TotAtom, r, rn, ncel, ll, hoc)
     use general, only: dp
     implicit none
     integer,intent(in) :: TotAtom
-    real,intent(in) :: r(TotAtom,3)
+    real(kind=dp),intent(in) :: r(TotAtom,3)
     real(kind=dp) :: rn 
-    integer:: icelx, icely, icelz, ncel, i
+    integer:: icelx, icely, icelz, ncel, i,j
     integer, intent(inout):: hoc(ncel, ncel, ncel), ll(TotAtom)
     
     write(*, *) "new_nlist"
+ do i=1,1
+   do j=1,3
+    write(*, *) i, j, r(i, j)
+   enddo
+ enddo
 
     do icelx=1,ncel
         do icely=1, ncel
@@ -17,9 +22,9 @@ SUBROUTINE new_nlist(TotAtom, r, rn, ncel, ll, hoc)
         enddo
     enddo
     do i=1,TotAtom
-        write(*, *) 'r(i, 1)', r(i, 1)
-        write(*, *) 'r(i, 2)', r(i, 2)
-        write(*, *) 'r(i, 3)', r(i, 3)
+        write(*, *) 'r(i, 1)', i, r(i, 1)
+        write(*, *) 'r(i, 2)', i, r(i, 2)
+        write(*, *) 'r(i, 3)', i, r(i, 3)
         write(*, *) 'rn', rn
         icelx=int(r(i, 1)/rn) + 1
         icely=int(r(i, 2)/rn) + 1

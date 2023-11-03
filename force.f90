@@ -23,9 +23,9 @@ subroutine force_calc(TotAtom,Box,Rcut,r,Sig,Eps,Force,PE,ll,hoc,ncel,rn)
  PE=0.d0
  Force=0.d0
  do atom1=1,TotAtom-1
-   icelx=int(r(atom1, 1)/rn)
-   icely=int(r(atom1, 2)/rn)
-   icelz=int(r(atom1, 3)/rn)
+   icelx=int(r(atom1, 1)/rn) + 1
+   icely=int(r(atom1, 2)/rn) + 1
+   icelz=int(r(atom1, 3)/rn) + 1
    atom2 = hoc(icelx, icely, icelz)
    do while (atom2 .ne. 0)
      dr=r(atom1,:)-r(atom2,:)
