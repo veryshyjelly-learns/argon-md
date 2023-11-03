@@ -37,6 +37,20 @@ subroutine integrate(t,EQMDStep,TotAtom,Mass,Box,Temp,Rcut,Sig,Eps,AtomLabel,Tim
 !    enddo
 !  endif
 
+ ! checking whether coordinates are outside the box 
+
+ do i=1,TotAtom
+   do j=1,3
+     if (r(i,j) > Box) then
+       r(i,j)=r(i,j)-Box*int(r(i, j)/Box)
+     endif
+     
+     if (r(i,j)<0.d0) then
+       r(i,j)=r(i,j)-Box*int(r(i, j)/Box)
+     endif 
+   enddo 
+ enddo
+
  call force_calc(TotAtom,Box,Rcut,r,Sig,Eps,Force,PE,ll,hoc,ncel,rn)
 
  sumv=0.d0
@@ -50,17 +64,6 @@ subroutine integrate(t,EQMDStep,TotAtom,Mass,Box,Temp,Rcut,Sig,Eps,AtomLabel,Tim
  Tins=(sumv2)/real(3.d0*TotAtom-3.d0)
  KE=sumv2/real(2.d0)      
 
- ! checking whether coordinates are outside the box 
-
- do i=1,TotAtom
-   do j=1,3
-     if(r(i,j) > Box) then
-       r(i,j)=r(i,j)-Box
-      elseif(r(i,j)<0.d0) then
-       r(i,j)=r(i,j)+Box
-     endif 
-   enddo 
- enddo
 
 ! write(*,*) "VELOCITIES"  
 ! write(206,"(I8,6F20.12)") Step,Mass*sumv 
@@ -68,14 +71,14 @@ subroutine integrate(t,EQMDStep,TotAtom,Mass,Box,Temp,Rcut,Sig,Eps,AtomLabel,Tim
 
 
 ! writing Trajectory  
-! open(unit=201,file='md.traj',action='write') 
-! write(201,"(I5)") TotAtom 
-! write(201,*) Step+1 
-! write(5000,*) 
-! write(*,*) "STEP = ",Step+1
-! do i=1,TotAtom
-!   write(201,"(a5,2x,3F12.4)") AtomLabel(i),r(i,:)*LengthConv
-! enddo  
+open(unit=201,file='md.traj',action='write') 
+write(201,"(I5)") TotAtom 
+write(201,*) Step+1 
+write(5000,*) 
+write(*,*) "STEP = ",Step+1
+do i=1,TotAtom
+  write(201,"(a5,2x,3F12.4)") AtomLabel(i),r(i,:)*LengthConv
+enddo  
 return 
 end subroutine integrate
 

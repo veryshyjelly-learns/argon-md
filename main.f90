@@ -94,14 +94,12 @@ Temp=Temp/TempConv
  allocate(r(TotAtom,3),rm(TotAtom,3),v(TotAtom,3)) 
  allocate(Force(TotAtom,3))
  allocate(AtomLabel(TotAtom))
- allocate(ll(TotAtom))
+ allocate(ll(TotAtom + 1))
  allocate(hoc(ncel, ncel, ncel))
 
- write(*, *) 'initialize in main'
  call initialize(TotAtom,CoorFileName,Temp,Mass,Box,r,v,AtomLabel)     ! get initial coordinates and velocities 
 
- call new_nlist(TotAtom, r, rn, ncel, ll, hoc)
- write(*, *) 'force calc in main'
+ call cell_list(TotAtom, r, rn, ncel, ll, hoc)
  call force_calc(TotAtom,Box,Rcut,r,Sig,Eps,Force,PE,ll,hoc,ncel,rn) 
 
  write(5000,"(a20,F18.5)") "Initial potential energy = ",PE*EnerConv  
@@ -111,14 +109,13 @@ Temp=Temp/TempConv
  call cpu_time(t0) 
  t=0.d0 ; md_step=0 
  do while (md_step < NoMDStep)
-
+  write(*, *) "STEP = ", md_step
   if (MOD(md_step, 10) .eq. 0) then 
-    write(*, *) 'new_nlist in main'
-     call new_nlist(TotAtom, r, rn, ncel, ll, hoc)
+     call cell_list(TotAtom, r, rn, ncel, ll, hoc)
   endif
-  call force_calc(TotAtom,Box,Rcut,r,Sig,Eps,Force,PE,ll,hoc,ncel,rn)                    ! calculates force
 
-  call integrate(t,EQMDStep,TotAtom,Mass,Box,Temp,Rcut,Sig,Eps,AtomLabel,TimeStep,r,v,Force,KE,PE)
+  call force_calc(TotAtom,Box,Rcut,r,Sig,Eps,Force,PE,ll,hoc,ncel,rn)                    ! calculates force
+  call integrate(t,EQMDStep,TotAtom,Mass,Box,Temp,Rcut,Sig,Eps,AtomLabel,TimeStep,r,v,Force,KE,PE,ll,hoc,ncel,rn)
    
   md_step=md_step+1 
 
